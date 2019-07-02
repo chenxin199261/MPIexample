@@ -1,0 +1,47 @@
+PROGRAM DGEMM_DIFF_THREADS
+INTEGER N, I, J
+PARAMETER (N=1000)
+REAL*8 A(N,N),B(N,N),C(N,N)
+REAL*8 ALPHA, BETA
+ALPHA = 1.1
+BETA = -1.2
+DO I=1,N
+DO J=1,N
+A(I,J) = I+J
+B(I,J) = I*j
+C(I,J) = 0.0
+END DO
+END DO
+CALL DGEMM('N','N',N,N,N,ALPHA,A,N,B,N,BETA,C,N)
+print *,'Row A C'
+DO i=1,10
+write(*,'(I4,F20.8,F20.8)') I, A(1,I),C(1,I)
+END DO
+CALL OMP_SET_NUM_THREADS(1);
+DO I=1,N
+DO J=1,N
+A(I,J) = I+J
+B(I,J) = I*j
+C(I,J) = 0.0
+END DO
+END DO
+CALL DGEMM('N','N',N,N,N,ALPHA,A,N,B,N,BETA,C,N)
+print *,'Row A C'
+DO i=1,10
+write(*,'(I4,F20.8,F20.8)') I, A(1,I),C(1,I)
+END DO
+CALL OMP_SET_NUM_THREADS(2);
+DO I=1,N
+DO J=1,N
+A(I,J) = I+J
+B(I,J) = I*j
+C(I,J) = 0.0
+END DO
+END DO
+CALL DGEMM('N','N',N,N,N,ALPHA,A,N,B,N,BETA,C,N)
+print *,'Row A C'
+DO i=1,10
+write(*,'(I4,F20.8,F20.8)') I, A(1,I),C(1,I)
+END DO
+STOP
+END

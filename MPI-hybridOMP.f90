@@ -17,7 +17,7 @@ program hybrid_test
   integer(4) :: omp_get_num_threads
   integer(4) :: omp_get_thread_num
   integer    :: provided,ierror
-  call MPI_INIT_THREAD(MPI_THREAD_SINGLE, PROVIDED, IERROR)
+  call MPI_INIT_THREAD(MPI_THREAD_FUNNELED , PROVIDED, IERROR)
   icomm = MPI_COMM_WORLD
   call MPI_COMM_SIZE(icomm,nproc,ierr)
   call MPI_COMM_RANK(icomm,iproc,ierr)
