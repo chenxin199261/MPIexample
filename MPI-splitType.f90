@@ -15,7 +15,6 @@ call dostupid(rank)
 call MPI_BARRIER(MPI_COMM_WORLD, ierr)
 call MPI_FINALIZE(ierr)
 
-
 end program test_MPI_RMA
 
 subroutine dostupid(rank)

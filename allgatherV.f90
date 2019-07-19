@@ -46,24 +46,26 @@
       isize(i)= i
       idisp(i)= i-1
     end do
-
+    idisp(1) = 0
+    do i=2,nproc 
+       idisp(i)= idisp(i-1) + isize(i-1)
+    end do
+    print *,"isize,idisp: ",isize,idisp
     do i=1,isize(rank+1)
-       atoms(i)%iatom = rank+i
+       atoms(i)%iatom = rank+i+1
        atoms(i)%coord(1:3) = (rank+1)*1D0*i
        atoms(i)%charge(1:3) = (rank+1)*1D0*i
     enddo
 
-
     CALL MPI_TYPE_CREATE_STRUCT(2,blockcounts,Offsets, Types, newtype, IErr)
     call MPI_TYPE_COMMIT(newtype,ierr)
 
-    write(*,*) rank, idisp,isize,atoms
+    write(*,*) rank, atoms
 
-    call MPI_ALLGATHERV(atoms,mysize,newtype, &
+    call MPI_ALLGATHERV(atoms,isize(rank+1),newtype, &
                      global_atom,isize,idisp,newtype,&
                      MPI_COMM_WORLD,ierr)      
-    write(*,*) rank, idisp,isize,global_atom
+    write(*,*) rank,global_atom
 
     call MPI_Finalize(ierr)
-
   END program

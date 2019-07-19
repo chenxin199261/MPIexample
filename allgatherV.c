@@ -28,7 +28,6 @@ int main(int argc, char **argv)
     for (i = 0; i < globalSize; i++)
         printf("%d ", globalData[i]);
     
-    
     printf("\n");
 
     MPI_Finalize();
