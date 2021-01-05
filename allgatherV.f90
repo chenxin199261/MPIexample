@@ -1,12 +1,12 @@
   MODULE PARALLEL
       use mpi
-    INTEGER iproc, nproc, rank, ierr
-    INTEGER mylow, myhigh, mysize, ichunk, irem
-    INTEGER, ALLOCATABLE :: isize(:), idisp(:), ilow(:), ihigh(:)
+    INTEGER*4                     :: iproc, nproc, rank, ierr
+    INTEGER*4                     :: mylow, myhigh, mysize, ichunk, irem
     DOUBLE PRECISION, ALLOCATABLE :: glob_val(:,:)
-    INTEGER newtype
-    integer ::  blockcounts(2),displs(2),types(2)
-    integer(KIND=MPI_ADDRESS_KIND) ::  offsets(2)
+    INTEGER*4                     :: newtype
+    integer*4                      ::  blockcounts(2),types(2)
+    integer(KIND=MPI_ADDRESS_KIND) ::  offsets(2),displs(2)
+    integer,ALLOCATABLE            :: isize(:),ilow(:),ihigh(:),idisp(:)
 
   END MODULE
 
@@ -15,14 +15,15 @@
     use mpi
     IMPLICIT NONE
     type atom
-      integer :: iatom
-      real(8) :: coord(3),charge(3)
+      integer*4 :: iatom
+      real(8)   :: coord(3),charge(3)
     end type atom
   
-    integer i, j
-    integer num_rows,num_cols
-    integer used_rows
+    integer*4 ::  i, j
+    integer*4 ::  num_rows,num_cols
+    integer*4 ::  used_rows
     type(atom) :: atoms(3),global_atom(6)
+    real(8)    :: A(100,100) 
 !    ----setup MPI----
     call MPI_INIT(ierr)
     call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
@@ -35,12 +36,13 @@
 
     blockcounts(1) = 1
     blockcounts(2) = 6
-    CALL MPI_GET_ADDRESS(atoms(1)%iatom, displs(1), IErr)
-    CALL MPI_GET_ADDRESS(atoms(1)%coord(1), displs(2), IErr)
-    Offsets = displs-displs(1)
 
     Types(1) = MPI_INTEGER
     Types(2) = MPI_DOUBLE_PRECISION
+    A = 0
+    CALL MPI_GET_ADDRESS(atoms(1)%iatom, displs(1), ierr) 
+    CALL MPI_GET_ADDRESS(atoms(1)%coord(1), displs(2),ierr)
+    Offsets = displs-displs(1)
 
     do i=1,nproc  
       isize(i)= i
@@ -61,6 +63,7 @@
     call MPI_TYPE_COMMIT(newtype,ierr)
 
     write(*,*) rank, atoms
+    write(*,*) "============================="
 
     call MPI_ALLGATHERV(atoms,isize(rank+1),newtype, &
                      global_atom,isize,idisp,newtype,&
