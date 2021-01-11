@@ -1,5 +1,5 @@
   MODULE PARALLEL
-      use mpi
+    use mpi
     INTEGER*4                     :: iproc, nproc, rank, ierr
     INTEGER*4                     :: mylow, myhigh, mysize, ichunk, irem
     DOUBLE PRECISION, ALLOCATABLE :: glob_val(:,:)
@@ -48,7 +48,6 @@
       isize(i)= i
       idisp(i)= i-1
     end do
-    idisp(1) = 0
     do i=2,nproc 
        idisp(i)= idisp(i-1) + isize(i-1)
     end do
